@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garun Siktir</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Space Grotesk', sans-serif; }
+
+/* ---- INTRO SCREEN ---- */
+#intro {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.8s ease;
+}
+#intro.hide { opacity: 0; pointer-events: none; }
+#intro .glow-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, #1a0030 0%, #000 70%);
+}
+#intro .logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px; letter-spacing: 8px;
+  background: linear-gradient(90deg, #ff2d78, #bf00ff, #00cfff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative; z-index: 1;
+  margin-bottom: 50px;
+}
+#intro .ring {
+  position: relative; z-index: 1;
+  width: 110px; height: 110px; border-radius: 50%;
+  border: 1.5px solid rgba(191,0,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 30px;
+  animation: rPulse 1.6s ease-in-out infinite;
+}
+#intro .ring::before {
+  content: ''; position: absolute; inset: -18px; border-radius: 50%;
+  border: 1px solid rgba(191,0,255,0.2);
+  animation: rPulse 1.6s ease-in-out infinite 0.4s;
+}
+#intro .ring::after {
+  content: ''; position: absolute; inset: -36px; border-radius: 50%;
+  border: 1px solid rgba(191,0,255,0.08);
+  animation: rPulse 1.6s ease-in-out infinite 0.8s;
+}
+@keyframes rPulse {
+  0%,100% { transform: scale(1); opacity:0.8; }
+  50% { transform: scale(1.1); opacity:1; }
+}
+#intro .play-icon {
+  width: 0; height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 34px solid #fff;
+  margin-left: 8px;
+}
+#intro .label {
+  position: relative; z-index: 1;
+  font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  animation: blink 2.5s ease-in-out infinite;
+}
+#intro .sub {
+  position: relative; z-index: 1;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  margin-top: 10px;
+}
+@keyframes blink { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+
+/* ---- BANNER ---- */
+#banner {
+  position: relative; width: 100%; height: 100vh;
+  background: #000; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.bg-layer {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, #1a0030 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 30%, #00102a 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 80%, #0d001a 0%, transparent 50%);
+  animation: bgPulse 6s ease-in-out infinite alternate;
+}
+@keyframes bgPulse { 0%{opacity:0.8;} 100%{opacity:1; filter:hue-rotate(20deg);} }
+.grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,60,200,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,60,200,.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove {
+  0% { transform: perspective(400px) rotateX(20deg) translateY(0); }
+  100% { transform: perspective(400px) rotateX(20deg) translateY(40px); }
+}
+.orb {
+  position: absolute; border-radius: 50%; filter: blur(60px);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.orb1 { width:300px; height:300px; background:rgba(180,0,255,.25); top:-80px; left:-80px; }
+.orb2 { width:250px; height:250px; background:rgba(0,200,255,.15); bottom:-60px; right:-60px; animation-delay:-3s; }
+.orb3 { width:180px; height:180px; background:rgba(255,50,120,.2); top:50%; left:50%; transform:translate(-50%,-50%); animation-delay:-1.5s; }
+@keyframes orbFloat {
+  0%,100%{transform:translate(0,0) scale(1);}
+  33%{transform:translate(20px,-15px) scale(1.05);}
+  66%{transform:translate(-15px,10px) scale(0.97);}
+}
+.scanlines {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.08) 2px, rgba(0,0,0,.08) 4px);
+}
+.spotlight {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: conic-gradient(from 0deg at 30% 0%, transparent 0deg, rgba(191,0,255,.06) 20deg, transparent 40deg);
+  animation: spotSweep 8s ease-in-out infinite alternate;
+}
+.spotlight2 {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: conic-gradient(from 180deg at 70% 0%, transparent 0deg, rgba(0,207,255,.05) 18deg, transparent 36deg);
+  animation: spotSweep2 10s ease-in-out infinite alternate;
+}
+@keyframes spotSweep { 0%{transform:rotate(-20deg);opacity:.6;} 100%{transform:rotate(20deg);opacity:.9;} }
+@keyframes spotSweep2 { 0%{transform:rotate(15deg);opacity:.5;} 100%{transform:rotate(-25deg);opacity:.9;} }
+.laser {
+  position: absolute; height: 1px; width: 100%; pointer-events: none; z-index: 3;
+  animation: laserScan linear infinite;
+}
+@keyframes laserScan {
+  0%{top:-2px;opacity:0;} 5%{opacity:1;} 95%{opacity:1;} 100%{top:100%;opacity:0;}
+}
+.vignette {
+  position: absolute; inset: 0; z-index: 6; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,.7) 100%);
+}
+.ring-deco {
+  position: absolute; left:50%; top:50%; border-radius:50%;
+  z-index: 4; pointer-events: none;
+  animation: ringPulse 4s ease-in-out infinite;
+}
+.ring-deco.r1 { width:520px; height:520px; transform:translate(-50%,-54%); border:1px solid rgba(191,0,255,.12); }
+.ring-deco.r2 { width:380px; height:380px; transform:translate(-50%,-54%); border:1px solid rgba(255,45,120,.1); animation-delay:1s; }
+@keyframes ringPulse {
+  0%,100%{opacity:.4;} 50%{opacity:.9;}
+}
+.geo { position: absolute; pointer-events: none; z-index: 3; }
+.geo svg { animation: geoFloat linear infinite; }
+@keyframes geoFloat {
+  0%{transform:translateY(0) rotate(0deg);opacity:.15;}
+  50%{opacity:.3;}
+  100%{transform:translateY(-30px) rotate(360deg);opacity:.15;}
+}
+
+/* particles */
+.particles { position: absolute; inset: 0; overflow: hidden; z-index: 3; }
+.particle {
+  position: absolute; width: 2px; height: 2px; border-radius: 50%;
+  background: #fff; animation: particleFly linear infinite;
+}
+@keyframes particleFly {
+  0%{transform:translateY(100vh) translateX(0);opacity:0;}
+  10%{opacity:1;} 90%{opacity:1;}
+  100%{transform:translateY(-10vh) translateX(var(--drift));opacity:0;}
+}
+
+/* CONTENT */
+.content {
+  position: relative; z-index: 10;
+  text-align: center; padding: 0 40px;
+}
+.tag {
+  display: inline-block; font-size:11px; font-weight:700; letter-spacing:4px;
+  text-transform:uppercase; color:rgba(255,255,255,.5);
+  border:1px solid rgba(255,255,255,.15); padding:6px 18px;
+  margin-bottom:28px; animation: fadeIn 1s ease both, flicker 8s infinite 3s;
+}
+@keyframes flicker { 0%,95%,100%{opacity:1;} 96%{opacity:.3;} 97%{opacity:1;} 98%{opacity:.1;} 99%{opacity:1;} }
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 108px; line-height: 0.9; letter-spacing: 4px;
+  animation: titleIn 1s cubic-bezier(.16,1,.3,1) .2s both;
+}
+.title-main {
+  display: block; color: #fff; position: relative;
+  animation: chroma 6s infinite 2s;
+}
+@keyframes chroma {
+  0%,90%,100%{text-shadow:none;}
+  91%{text-shadow:2px 0 0 rgba(255,0,100,.6),-2px 0 0 rgba(0,200,255,.6);}
+  93%{text-shadow:-3px 0 0 rgba(255,0,100,.5),3px 0 0 rgba(0,200,255,.5);}
+  95%{text-shadow:1px 0 0 rgba(255,0,100,.4),-1px 0 0 rgba(0,200,255,.4);}
+}
+.title-main::before {
+  content:'GARUN'; position:absolute; left:2px; top:0; color:#ff2d78;
+  clip-path:polygon(0 20%,100% 20%,100% 35%,0 35%);
+  animation:glitch 5s infinite; opacity:.7;
+}
+@keyframes glitch {
+  0%,92%,100%{transform:translateX(0);opacity:0;}
+  93%{transform:translateX(-3px);opacity:.7;}
+  94%{transform:translateX(3px);opacity:.7;}
+  95%{transform:translateX(0);opacity:0;}
+  96%{transform:translateX(-2px);opacity:.5;}
+  97%{transform:translateX(0);opacity:0;}
+}
+.title-accent {
+  display: block;
+  background: linear-gradient(90deg,#ff2d78,#bf00ff,#00cfff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.meta {
+  display:flex; align-items:center; justify-content:center; gap:24px;
+  margin-top:28px; animation:fadeIn 1s ease .6s both;
+}
+.meta-item { font-size:13px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.45); }
+.meta-dot { width:4px; height:4px; border-radius:50%; background:linear-gradient(135deg,#ff2d78,#bf00ff); }
+.join-btn {
+  display: inline-block; margin-top:32px; padding:16px 48px;
+  font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase; color:#fff;
+  background:transparent; border:1px solid rgba(255,255,255,.35);
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:border-color .3s, transform .2s;
+  animation:fadeIn 1s ease .9s both;
+}
+.join-btn::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,#ff2d78,#bf00ff,#00cfff);
+  opacity:0; transition:opacity .3s;
+}
+.join-btn:hover::before{opacity:.25;}
+.join-btn:hover{border-color:rgba(255,255,255,.8);transform:scale(1.03);}
+.join-btn span{position:relative;z-index:1;}
+
+/* DANCERS */
+.dancers {
+  position:absolute; bottom:0; left:0; width:100%; height:220px;
+  z-index:5; display:flex; align-items:flex-end; justify-content:center;
+  pointer-events:none;
+}
+.dancer svg { filter: drop-shadow(0 0 18px rgba(191,0,255,.4)); }
+@keyframes dance1 {
+  0%{transform:scaleY(1) rotate(-2deg);}
+  30%{transform:scaleY(1.02) rotate(-4deg) translateY(-10px);}
+  60%{transform:scaleY(1) rotate(-3deg) translateY(-12px);}
+  100%{transform:scaleY(1) rotate(-2deg);}
+}
+@keyframes dance2 {
+  0%{transform:rotate(4deg) translateY(0);}
+  20%{transform:rotate(-5deg) translateY(-14px);}
+  60%{transform:rotate(-3deg) translateY(-16px);}
+  100%{transform:rotate(4deg) translateY(0);}
+}
+@keyframes dance3 {
+  0%{transform:skewX(3deg) translateY(0);}
+  50%{transform:skewX(4deg) translateY(-16px) rotate(-3deg);}
+  100%{transform:skewX(3deg) translateY(0);}
+}
+@keyframes dance4 {
+  0%{transform:rotate(-3deg) translateY(0);}
+  10%{transform:rotate(6deg) translateY(-18px);}
+  50%{transform:rotate(5deg) translateY(-20px);}
+  100%{transform:rotate(-3deg) translateY(0);}
+}
+@keyframes dance5 {
+  0%{transform:scaleX(1) rotate(2deg) translateY(0);}
+  60%{transform:scaleX(.98) rotate(-3deg) translateY(-14px);}
+  100%{transform:scaleX(1) rotate(2deg) translateY(0);}
+}
+@keyframes dance6 {
+  0%{transform:rotate(0deg) translateY(0);}
+  50%{transform:rotate(-4deg) translateY(-18px);}
+  100%{transform:rotate(0deg) translateY(0);}
+}
+.ground-glow {
+  position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:90%; height:60px; z-index:4;
+  background:linear-gradient(to top,rgba(191,0,255,.15),transparent);
+  animation:groundGlow 3s ease-in-out infinite;
+}
+@keyframes groundGlow { 0%,100%{opacity:.3;} 50%{opacity:.7;} }
+.deco-line {
+  position:absolute; height:1px; width:60%; left:20%;
+  animation:lineGlow 3s ease-in-out infinite alternate;
+}
+.deco-line-top { top:60px; background:linear-gradient(90deg,transparent,rgba(255,45,120,.5),transparent); }
+.deco-line-bottom { bottom:60px; background:linear-gradient(90deg,transparent,rgba(0,207,255,.5),transparent); }
+@keyframes lineGlow { 0%{opacity:.4;transform:scaleX(.8);} 100%{opacity:.9;transform:scaleX(1);} }
+
+/* MUSIC BTN */
+.music-btn {
+  position:fixed; bottom:32px; right:32px; z-index:100;
+  width:52px; height:52px; border-radius:50%;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.2);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all .3s;
+}
+.music-btn:hover{background:rgba(255,45,120,.2);border-color:rgba(255,45,120,.5);}
+.music-btn svg{width:22px;height:22px;fill:#fff;}
+.music-btn.playing{border-color:rgba(191,0,255,.6);animation:btnPulse 1.5s ease-in-out infinite;}
+@keyframes btnPulse{0%,100%{box-shadow:0 0 0 0 rgba(191,0,255,.3);}50%{box-shadow:0 0 0 10px rgba(191,0,255,0);}}
+.visualizer {
+  position:fixed; bottom:95px; right:24px; z-index:100;
+  display:flex; align-items:flex-end; gap:3px; height:30px;
+  opacity:0; transition:opacity .3s;
+}
+.visualizer.active{opacity:1;}
+.bar{width:4px;background:linear-gradient(to top,#ff2d78,#bf00ff);border-radius:2px;animation:barAnim .8s ease-in-out infinite alternate;}
+@keyframes barAnim{from{height:4px;}to{height:28px;}}
+
+/* MODAL */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.88);
+  z-index:500; display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity .3s; backdrop-filter:blur(8px);
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal {
+  background:#0a0010; border:1px solid rgba(191,0,255,.35);
+  padding:48px 44px; width:100%; max-width:400px;
+  position:relative; text-align:center;
+}
+.modal-close {
+  position:absolute; top:14px; right:18px;
+  background:none; border:none; color:rgba(255,255,255,.4);
+  font-size:24px; cursor:pointer; transition:color .2s; line-height:1;
+}
+.modal-close:hover{color:#fff;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:#fff;margin-bottom:4px;}
+.modal-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:30px;}
+.modal-field {
+  width:100%; background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.12); color:#fff;
+  font-family:'Space Grotesk',sans-serif; font-size:14px;
+  padding:14px 16px; margin-bottom:12px; outline:none;
+  transition:border-color .2s; box-sizing:border-box;
+}
+.modal-field::placeholder{color:rgba(255,255,255,.25);}
+.modal-field:focus{border-color:rgba(191,0,255,.55);}
+.modal-submit {
+  width:100%; padding:16px; margin-top:6px;
+  background:linear-gradient(90deg,#ff2d78,#bf00ff);
+  border:none; color:#fff; font-family:'Space Grotesk',sans-serif;
+  font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+  cursor:pointer; transition:opacity .2s;
+}
+.modal-submit:hover{opacity:.85;}
+.success-box{display:none;padding:10px 0;}
+.success-check {
+  width:56px; height:56px; border-radius:50%;
+  border:2px solid #bf00ff;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 18px; font-size:26px; color:#fff;
+}
+.success-box p{color:rgba(255,255,255,.6);font-size:14px;line-height:1.7;}
+.success-box strong{color:#fff;}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes titleIn{from{opacity:0;transform:translateY(30px) skewY(-2deg);}to{opacity:1;transform:translateY(0) skewY(0);}}
+</style>
+</head>
+<body>
+
+<!-- INTRO / CLICK TO START -->
+<div id="intro">
+  <div class="glow-bg"></div>
+  <div class="logo">GARUN SIKTIR</div>
+  <div class="ring"><div class="play-icon"></div></div>
+  <div class="label">Нажми чтобы войти</div>
+  <div class="sub">18 апреля · 22:00 · Ереван</div>
+</div>
+
+<!-- BANNER -->
+<div id="banner">
+  <div class="bg-layer"></div>
+  <div class="grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="scanlines"></div>
+  <div class="spotlight"></div>
+  <div class="spotlight2"></div>
+  <div class="laser" style="animation-duration:7s;background:linear-gradient(90deg,transparent,rgba(255,45,120,.4),transparent);"></div>
+  <div class="laser" style="animation-duration:11s;animation-delay:3s;background:linear-gradient(90deg,transparent,rgba(0,207,255,.35),transparent);"></div>
+  <div class="laser" style="animation-duration:9s;animation-delay:6s;background:linear-gradient(90deg,transparent,rgba(191,0,255,.3),transparent);"></div>
+  <div class="vignette"></div>
+  <div class="ring-deco r1"></div>
+  <div class="ring-deco r2"></div>
+  <div class="geo" style="left:8%;top:20%;"><svg width="40" height="40" viewBox="0 0 40 40" style="animation-duration:12s;"><polygon points="20,2 38,38 2,38" fill="none" stroke="rgba(255,45,120,.3)" stroke-width="1"/></svg></div>
+  <div class="geo" style="right:10%;top:30%;"><svg width="28" height="28" viewBox="0 0 28 28" style="animation-duration:9s;animation-delay:-4s;"><rect x="4" y="4" width="20" height="20" fill="none" stroke="rgba(0,207,255,.25)" stroke-width="1" transform="rotate(15 14 14)"/></svg></div>
+  <div class="geo" style="left:15%;bottom:25%;"><svg width="22" height="22" viewBox="0 0 22 22" style="animation-duration:15s;animation-delay:-7s;"><polygon points="11,1 21,21 1,21" fill="none" stroke="rgba(191,0,255,.3)" stroke-width="1"/></svg></div>
+  <div class="geo" style="right:18%;bottom:30%;"><svg width="32" height="32" viewBox="0 0 32 32" style="animation-duration:11s;animation-delay:-2s;"><rect x="6" y="6" width="20" height="20" fill="none" stroke="rgba(255,45,120,.2)" stroke-width="1" transform="rotate(30 16 16)"/></svg></div>
+  <div class="particles" id="particles"></div>
+  <div class="deco-line deco-line-top"></div>
+  <div class="deco-line deco-line-bottom"></div>
+
+  <!-- Dancers -->
+  <div class="dancers">
+    <div style="animation:dance1 1.8s ease-in-out infinite;margin-right:-10px;">
+      <svg width="70" height="190" viewBox="0 0 70 190" fill="none">
+        <circle cx="35" cy="22" r="12" fill="rgba(30,0,50,.9)"/>
+        <rect x="28" y="34" width="14" height="50" rx="6" fill="rgba(30,0,50,.9)"/>
+        <path d="M28 40 Q10 15 5 5" stroke="rgba(30,0,50,.9)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M42 40 Q60 15 65 5" stroke="rgba(30,0,50,.9)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M30 84 Q22 120 18 155" stroke="rgba(30,0,50,.9)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M40 84 Q48 120 52 155" stroke="rgba(30,0,50,.9)" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div style="animation:dance2 2.1s ease-in-out infinite .3s;margin-right:-5px;">
+      <svg width="75" height="195" viewBox="0 0 75 195" fill="none">
+        <circle cx="37" cy="20" r="13" fill="rgba(25,0,45,.95)"/>
+        <rect x="30" y="33" width="14" height="52" rx="6" fill="rgba(25,0,45,.95)"/>
+        <path d="M30 44 Q10 50 2 58" stroke="rgba(25,0,45,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M44 44 Q62 22 70 10" stroke="rgba(25,0,45,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M32 85 Q20 120 15 158" stroke="rgba(25,0,45,.95)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M42 85 Q52 125 56 160" stroke="rgba(25,0,45,.95)" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div style="animation:dance3 1.6s ease-in-out infinite .6s;margin-right:-8px;">
+      <svg width="90" height="200" viewBox="0 0 90 200" fill="none">
+        <circle cx="45" cy="20" r="14" fill="rgba(20,0,40,.95)"/>
+        <rect x="38" y="34" width="14" height="54" rx="6" fill="rgba(20,0,40,.95)"/>
+        <path d="M38 46 Q20 46 5 50" stroke="rgba(20,0,40,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M52 46 Q68 42 85 38" stroke="rgba(20,0,40,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M40 88 Q28 118 20 162" stroke="rgba(20,0,40,.95)" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <path d="M50 88 Q62 122 68 162" stroke="rgba(20,0,40,.95)" stroke-width="10" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div style="animation:dance4 1.4s ease-in-out infinite .1s;">
+      <svg width="80" height="210" viewBox="0 0 80 210" fill="none">
+        <circle cx="40" cy="20" r="14" fill="rgba(15,0,35,.98)"/>
+        <rect x="33" y="34" width="14" height="58" rx="6" fill="rgba(15,0,35,.98)"/>
+        <path d="M33 42 Q18 28 8 8" stroke="rgba(15,0,35,.98)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M47 42 Q62 30 72 12" stroke="rgba(15,0,35,.98)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M36 92 Q24 130 14 172" stroke="rgba(15,0,35,.98)" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <path d="M44 92 Q56 130 66 172" stroke="rgba(15,0,35,.98)" stroke-width="10" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div style="animation:dance5 1.9s ease-in-out infinite .5s;margin-left:-8px;">
+      <svg width="80" height="200" viewBox="0 0 80 200" fill="none">
+        <circle cx="40" cy="21" r="13" fill="rgba(20,0,40,.95)"/>
+        <rect x="33" y="34" width="14" height="52" rx="6" fill="rgba(20,0,40,.95)"/>
+        <path d="M33 48 Q18 60 10 72" stroke="rgba(20,0,40,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M47 42 Q64 20 72 6" stroke="rgba(20,0,40,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M36 86 Q20 90 8 100" stroke="rgba(20,0,40,.95)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M44 86 Q52 120 56 168" stroke="rgba(20,0,40,.95)" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div style="animation:dance6 2.3s ease-in-out infinite .8s;margin-left:-5px;">
+      <svg width="85" height="195" viewBox="0 0 85 195" fill="none">
+        <circle cx="42" cy="20" r="13" fill="rgba(25,0,45,.95)"/>
+        <rect x="35" y="33" width="14" height="52" rx="6" fill="rgba(25,0,45,.95)"/>
+        <path d="M35 42 Q16 24 4 10" stroke="rgba(25,0,45,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M49 48 Q68 52 80 56" stroke="rgba(25,0,45,.95)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M38 85 Q26 118 20 158" stroke="rgba(25,0,45,.95)" stroke-width="9" stroke-linecap="round" fill="none"/>
+        <path d="M46 85 Q58 120 64 158" stroke="rgba(25,0,45,.95)" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+  </div>
+  <div class="ground-glow"></div>
+
+  <!-- Main content -->
+  <div class="content">
+    <div class="tag">Spring Edition 2026</div>
+    <div class="title">
+      <span class="title-main">GARUN</span>
+      <span class="title-accent">SIKTIR</span>
+    </div>
+    <div class="meta">
+      <span class="meta-item">18 апреля</span>
+      <div class="meta-dot"></div>
+      <span class="meta-item">22:00</span>
+      <div class="meta-dot"></div>
+      <span class="meta-item">Ереван</span>
+    </div>
+    <button class="join-btn" id="joinBtn"><span>Присоединиться к вечеринке</span></button>
+  </div>
+</div>
+
+<!-- Music button -->
+<button class="music-btn" id="musicBtn">
+  <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+</button>
+<div class="visualizer" id="visualizer">
+  <div class="bar" style="animation-delay:0s;height:8px"></div>
+  <div class="bar" style="animation-delay:.1s;height:16px"></div>
+  <div class="bar" style="animation-delay:.2s;height:12px"></div>
+  <div class="bar" style="animation-delay:.3s;height:20px"></div>
+  <div class="bar" style="animation-delay:.15s;height:10px"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="joinModal">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div id="mForm">
+      <div class="modal-title">GARUN SIKTIR</div>
+      <div class="modal-sub">Зарегистрируйся на вечеринку</div>
+      <input class="modal-field" id="f-name" type="text" placeholder="Твоё имя" />
+      <input class="modal-field" id="f-phone" type="tel" placeholder="Номер телефона" />
+      <input class="modal-field" id="f-guests" type="number" placeholder="Количество гостей" min="1" max="20" />
+      <button class="modal-submit" id="modalSubmit">Я иду на вечеринку →</button>
+    </div>
+    <div class="success-box" id="mSuccess">
+      <div class="success-check">✓</div>
+      <p><strong>Ты в списке!</strong><br>Ждём тебя 18 апреля в 22:00.<br>Будет огонь 🔥</p>
+    </div>
+  </div>
+</div>
+
+<audio id="audio" loop>
+  <source src="Jerri_Loop.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function() {
+  // Particles
+  var container = document.getElementById('particles');
+  for (var i = 0; i < 30; i++) {
+    var p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.animationDuration = (4 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    p.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    p.style.opacity = Math.random() * 0.6 + 0.2;
+    container.appendChild(p);
+  }
+
+  var audio = document.getElementById('audio');
+  var musicBtn = document.getElementById('musicBtn');
+  var iconPlay = document.getElementById('iconPlay');
+  var iconPause = document.getElementById('iconPause');
+  var visualizer = document.getElementById('visualizer');
+  var intro = document.getElementById('intro');
+
+  function startMusic() {
+    audio.play();
+    musicBtn.classList.add('playing');
+    iconPlay.style.display = 'none';
+    iconPause.style.display = 'block';
+    visualizer.classList.add('active');
+  }
+
+  function stopMusic() {
+    audio.pause();
+    musicBtn.classList.remove('playing');
+    iconPlay.style.display = 'block';
+    iconPause.style.display = 'none';
+    visualizer.classList.remove('active');
+  }
+
+  // Intro click — start music and hide intro
+  intro.addEventListener('click', function() {
+    startMusic();
+    intro.classList.add('hide');
+    setTimeout(function() { intro.style.display = 'none'; }, 900);
+  });
+
+  // Music button toggle
+  musicBtn.addEventListener('click', function() {
+    if (audio.paused) { startMusic(); } else { stopMusic(); }
+  });
+
+  // Join button
+  document.getElementById('joinBtn').addEventListener('click', function() {
+    document.getElementById('joinModal').classList.add('open');
+  });
+
+  // Modal close
+  document.getElementById('modalClose').addEventListener('click', function() {
+    document.getElementById('joinModal').classList.remove('open');
+  });
+  document.getElementById('joinModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  // Modal submit
+  document.getElementById('modalSubmit').addEventListener('click', function() {
+    var n = document.getElementById('f-name').value.trim();
+    var p = document.getElementById('f-phone').value.trim();
+    document.getElementById('f-name').style.borderColor = n ? 'rgba(255,255,255,.12)' : 'rgba(255,45,120,.7)';
+    document.getElementById('f-phone').style.borderColor = p ? 'rgba(255,255,255,.12)' : 'rgba(255,45,120,.7)';
+    if (!n || !p) return;
+    document.getElementById('mForm').style.display = 'none';
+    document.getElementById('mSuccess').style.display = 'block';
+  });
+})();
+</script>
+</body>
+</html>
